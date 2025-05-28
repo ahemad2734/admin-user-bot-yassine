@@ -1,0 +1,28 @@
+name: Run Bots
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */4 * * *'
+
+jobs:
+  run-bots:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Run bots
+      run: |
+        python bot1_user_register.py &
+        python bot2_admin_activate.py
+      env:
+        BOT1_TOKEN: ${{ secrets.BOT1_TOKEN }}
+        BOT2_TOKEN: ${{ secrets.BOT2_TOKEN }}
+        CHANNEL_USERNAME: ${{ secrets.CHANNEL_USERNAME }}
+        ADMIN_ID: ${{ secrets.ADMIN_ID }}
